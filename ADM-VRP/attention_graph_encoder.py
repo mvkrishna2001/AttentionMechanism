@@ -1,6 +1,7 @@
 import tensorflow as tf
 from layers import MultiHeadAttention
 
+# <We just have to mess with the Attention not the Architecture.>
 
 class MultiHeadAttentionLayer(tf.keras.layers.Layer):
     """Feed-Forward Sublayer: fully-connected Feed-Forward network,
@@ -72,6 +73,7 @@ class GraphAttentionEncoder(tf.keras.layers.Layer):
         self.init_embed_depot = tf.keras.layers.Dense(self.input_dim, name='init_embed_depot')  # nn.Linear(2, embedding_dim)
         self.init_embed = tf.keras.layers.Dense(self.input_dim, name='init_embed')
 
+        # <Remove>
         self.mha_layers = [MultiHeadAttentionLayer(self.input_dim, self.num_heads, self.feed_forward_hidden)
                             for _ in range(self.num_layers)]
 

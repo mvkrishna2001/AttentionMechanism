@@ -38,23 +38,15 @@ class MultiHeadAttention(tf.keras.layers.Layer):
 
         self.w_out = tf.keras.layers.Dense(self.d_model, use_bias=False)  # (d_model, d_model)
 
-    def split_heads(self, tensor, batch_size):
-        """Function for computing attention on several heads simultaneously
-        Splits last dimension of a tensor into (num_heads, head_depth).
-        Then we transpose it as (batch_size, num_heads, ..., head_depth) so that we can use broadcast
-        """
-        tensor = tf.reshape(tensor, (batch_size, -1, self.n_heads, self.head_depth))
-        return tf.transpose(tensor, perm=[0, 2, 1, 3])
 
-    # treats first parameter q as input, and  k, v as parameters, so input_shape=q.shape
     def call(self, q, k, v, mask=None):
         # shape of q: (batch_size, seq_len_q, d_q)
         batch_size = tf.shape(q)[0]
 
         # compute Q = q * w_q, ...
         Q = self.wq(q)  # (batch_size, seq_len_q, d_q) x (d_q, d_model) --> (batch_size, seq_len_q, d_model)
-        K = self.wk(k)  # ... --> (batch_size, seq_len_k, d_model)
-        V = self.wv(v)  # ... --> (batch_size, seq_len_v, d_model)
+        # K = self.wk(k)  # ... --> (batch_size, seq_len_k, d_model)
+        # V = self.wv(v)  # ... --> (batch_size, seq_len_v, d_model)
 
         # split heads: d_model = num_heads * head_depth + reshape
         Q = self.split_heads(Q, batch_size)  # (batch_size, num_heads, seq_len_q, head_depth)
